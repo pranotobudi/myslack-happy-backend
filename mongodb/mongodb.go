@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pranotobudi/myslack-monolith-backend/config"
+	"github.com/pranotobudi/myslack-happy-backend/config"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

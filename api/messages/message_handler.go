@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pranotobudi/myslack-monolith-backend/common"
+	"github.com/pranotobudi/myslack-happy-backend/common"
 	"go.mongodb.org/mongo-driver/bson"
 )
 

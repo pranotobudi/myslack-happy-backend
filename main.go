@@ -7,11 +7,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/pranotobudi/myslack-monolith-backend/api/messages"
-	"github.com/pranotobudi/myslack-monolith-backend/api/rooms"
-	"github.com/pranotobudi/myslack-monolith-backend/api/users"
-	"github.com/pranotobudi/myslack-monolith-backend/config"
-	"github.com/pranotobudi/myslack-monolith-backend/msgserver"
+	"github.com/pranotobudi/myslack-happy-backend/api/messages"
+	"github.com/pranotobudi/myslack-happy-backend/api/rooms"
+	"github.com/pranotobudi/myslack-happy-backend/api/users"
+	"github.com/pranotobudi/myslack-happy-backend/config"
+	"github.com/pranotobudi/myslack-happy-backend/msgserver"
 )
 
 func main() {

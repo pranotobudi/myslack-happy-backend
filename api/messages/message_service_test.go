@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/pranotobudi/myslack-monolith-backend/mongodb"
+	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 	"github.com/stretchr/testify/assert"
 	"go.mongodb.org/mongo-driver/bson"
 )

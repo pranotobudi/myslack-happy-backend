@@ -3,7 +3,7 @@ package msgserver
 import (
 	"log"
 
-	"github.com/pranotobudi/myslack-monolith-backend/mongodb"
+	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )

@@ -1,7 +1,7 @@
 package messages
 
 import (
-	"github.com/pranotobudi/myslack-monolith-backend/mongodb"
+	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 )
 
 type IMessageService interface {

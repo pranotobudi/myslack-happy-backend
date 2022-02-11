@@ -3,7 +3,7 @@ package rooms
 import (
 	"fmt"
 
-	"github.com/pranotobudi/myslack-monolith-backend/mongodb"
+	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 )
 
 type IRoomService interface {

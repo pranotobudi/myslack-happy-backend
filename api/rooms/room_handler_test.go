@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pranotobudi/myslack-monolith-backend/mongodb"
+	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/pranotobudi/myslack-monolith-backend/common"
-	"github.com/pranotobudi/myslack-monolith-backend/mongodb"
+	"github.com/pranotobudi/myslack-happy-backend/common"
+	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 )
 
 type IUserHandler interface {
