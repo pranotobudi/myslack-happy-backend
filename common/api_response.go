@@ -1,9 +1,5 @@
 package common
 
-import (
-	"net/http"
-)
-
 // response
 // meta payload
 
@@ -30,7 +26,7 @@ func ResponseFormatter(code int, status string, message interface{}, data interf
 	}
 	return response
 }
-func ResponseErrorFormatter(err error) Response {
-	response := ResponseFormatter(http.StatusBadRequest, "error", "invalid request", err.Error())
+func ResponseErrorFormatter(code int, err error) Response {
+	response := ResponseFormatter(code, "error", "invalid request", err.Error())
 	return response
 }

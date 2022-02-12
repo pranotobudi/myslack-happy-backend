@@ -5,7 +5,8 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gin-gonic/gin"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
 	"github.com/pranotobudi/myslack-happy-backend/api/messages"
 	"github.com/pranotobudi/myslack-happy-backend/api/rooms"
@@ -33,67 +34,41 @@ func StartApp() {
 	}
 
 	// # run router server
-	gin.SetMode(gin.ReleaseMode)
+	// gin.SetMode(gin.ReleaseMode)
 	appConfig := config.AppConfig()
 	log.Println("server run on port:8080...")
 	http.ListenAndServe(":"+appConfig.Port, Router())
 
 }
-func Router() *gin.Engine {
+func Router() *chi.Mux {
 	// handler
 	messageHandler := messages.NewMessageHandler()
 	roomHandler := rooms.NewRoomHandler()
 	userHandler := users.NewUserHandler()
-
-	// #2 init gin main server
-	router := gin.Default()
-	router.Use(CORS)
-	// gin.SetMode(gin.ReleaseMode)
-
+	// #2 init chi routing server
+	router := chi.NewRouter()
+	// router := gin.Default()
+	router.Use(cors.Handler(cors.Options{
+		// AllowedOrigins:   []string{"https://foo.com"}, // Use this to allow specific origin hosts
+		AllowedOrigins: []string{"https://*", "http://*"},
+		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
+		ExposedHeaders:   []string{"Link"},
+		AllowCredentials: false,
+		MaxAge:           300, // Maximum value not ignored by any of major browsers
+	}))
 	// #3 handle url to init websocket client connection (will have func to handle incoming url)
 	// this client will notify subscribe event to the global message server through channel.
-
-	router.GET("/", users.HelloWorld)
-	router.GET("/rooms", roomHandler.GetRooms)
-	router.POST("/room", roomHandler.AddRoom)
-	router.GET("/room", roomHandler.GetAnyRoom)
-	router.GET("/messages", messageHandler.GetMessages)
-	router.GET("/userByEmail", userHandler.GetUserByEmail)
-	router.POST("/userAuth", userHandler.UserAuth)
-	router.PUT("/updateUserRooms", userHandler.UpdateUserRooms)
-	router.GET("/websocket", msgserver.InitWebsocket)
+	router.Get("/", users.HelloWorld)
+	router.Get("/rooms", roomHandler.GetRooms)
+	router.Post("/room", roomHandler.AddRoom)
+	router.Get("/room", roomHandler.GetAnyRoom)
+	router.Get("/messages", messageHandler.GetMessages)
+	router.Get("/userByEmail", userHandler.GetUserByEmail)
+	router.Post("/userAuth", userHandler.UserAuth)
+	router.Put("/updateUserRooms", userHandler.UpdateUserRooms)
+	router.Get("/websocket", msgserver.InitWebsocket)
 
 	return router
 }
-
-func CORS(c *gin.Context) {
-	c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-	c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-	c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-	c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
-
-	if c.Request.Method == "OPTIONS" {
-		c.AbortWithStatus(204)
-		return
-	}
-
-	c.Next()
-}
-
-// func serveMainPage(c *gin.Context) {
-// 	// request: userId
-// 	// response: user snapshot to load main page
-// 	fmt.Println("inside serveMainPage!")
-// 	c.File("static/index.html")
-// }
-// func serveStaticPage(c *gin.Context) {
-// 	fmt.Println("inside serveStaticPage!")
-// 	filePath := c.Request.URL.Path
-// 	c.File(filePath)
-// }
-
-// func chatServer(c *gin.Context) {
-// 	log.Println("inside chatServer! message Send..")
-// 	c.Writer.WriteHeader(http.StatusAccepted)
-// 	c.Writer.Write([]byte("msg send.."))
-// }

@@ -1,13 +1,14 @@
 package messages
 
 import (
+	"encoding/json"
 	"errors"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gin-gonic/gin"
+	"github.com/pranotobudi/myslack-happy-backend/common"
 	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 	"github.com/stretchr/testify/assert"
 )
@@ -47,27 +48,23 @@ func TestGetMessagesHandler(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			getMessagesServiceFunc = tc.mockFunc
 
-			// messageHandler := NewMessageHandler(&mockService{})
 			messageHandler := NewMessageHandler()
 			messageHandler.service = &mockMessageService{}
-			rc := httptest.NewRecorder()
-			// gin.SetMode(gin.ReleaseMode)
-			c, _ := gin.CreateTestContext(rc)
-			c.Request, _ = http.NewRequest(http.MethodGet, "http://localhost:8080/messages?room_id=61f61d94fc663b6f4c8f3172", nil)
-			// c.Request, _ = http.NewRequest(http.MethodGet, "", nil) // c.Params doesn't work for c.GetQuery("room_id")
-			// c.Params = gin.Params{
-			// 	{Key: "room_id", Value: "61f61d94fc663b6f4c8f3172"},
-			// }
+			rr := httptest.NewRecorder()
+			req, _ := http.NewRequest(http.MethodGet, "http://localhost:8080/messages?room_id=61f61d94fc663b6f4c8f3172", nil)
 
-			log.Println(c.Params, c.Request.RequestURI)
-			messageHandler.GetMessages(c)
+			log.Println(req.RequestURI)
+			messageHandler.GetMessages(rr, req)
 
-			assert.EqualValues(t, tc.CodeWant, rc.Code)
-			log.Println("test response: ", rc.Body.String())
-			// var response common.Response
-			// err := json.Unmarshal(rc.Body.Bytes(), &response)
-			// assert.Nil(t, err)
-			// assert.
+			log.Println("test response: ", rr.Body.String())
+			// check header StatusCode
+			assert.EqualValues(t, tc.CodeWant, rr.Code)
+			// check response (JSON format) StatusCode
+			var response common.Response
+			if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
+				assert.Errorf(t, err, "response format is not valid")
+			}
+			assert.EqualValues(t, tc.CodeWant, response.Meta.Code)
 		})
 	}
 

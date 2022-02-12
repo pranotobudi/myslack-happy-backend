@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
@@ -74,7 +73,7 @@ func NewWsClient(conn *websocket.Conn, hub *Hub, mongodbConn *mongodb.MongoDB) *
 	}
 }
 
-func InitWebsocket(c *gin.Context) {
+func InitWebsocket(w http.ResponseWriter, r *http.Request) {
 
 	// init websocket
 	log.Println("initWebsocket")
@@ -97,7 +96,7 @@ func InitWebsocket(c *gin.Context) {
 		},
 	}
 
-	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
+	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		log.Println("websocket connection failed: ", err)
 		return

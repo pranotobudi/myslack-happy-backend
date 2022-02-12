@@ -1,19 +1,20 @@
 package rooms
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/pranotobudi/myslack-happy-backend/common"
 	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 )
 
 type IRoomHandler interface {
-	GetRooms(c *gin.Context)
-	GetAnyRoom(c *gin.Context)
-	AddRoom(c *gin.Context)
+	GetRooms(w http.ResponseWriter, r *http.Request)
+	GetAnyRoom(w http.ResponseWriter, r *http.Request)
+	AddRoom(w http.ResponseWriter, r *http.Request)
 }
 
 type roomHandler struct {
@@ -27,63 +28,80 @@ func NewRoomHandler() *roomHandler {
 }
 
 // GetRooms will return all rooms available
-func (h *roomHandler) GetRooms(c *gin.Context) {
+func (h *roomHandler) GetRooms(w http.ResponseWriter, r *http.Request) {
 	// rooms, err := mongo.GetRooms()
 	rooms, err := h.roomService.GetRooms()
 	if err != nil {
-		response := common.ResponseErrorFormatter(err)
-		c.JSON(http.StatusInternalServerError, response)
+		response := common.ResponseErrorFormatter(http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(response)
+		// w.Write([]byte(fmt.Sprintf("%v", response)))
+		// c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 	fmt.Println("inside room_io_handler-getRooms!: ", rooms)
 	response := common.ResponseFormatter(http.StatusOK, "success", "get rooms successfull", rooms)
 	log.Println("RESPONSE TO BROWSER: ", response)
-	// Add CORS headers, if no global CORS setting
-	// c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
-	// c.Header("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS")
 
-	c.JSON(http.StatusOK, response)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+	// w.Write([]byte(fmt.Sprintf("%v", response)))
+	// c.JSON(http.StatusOK, response)
 }
 
 // GetAnyRoom will return one room with no specific condition
-func (h *roomHandler) GetAnyRoom(c *gin.Context) {
+func (h *roomHandler) GetAnyRoom(w http.ResponseWriter, r *http.Request) {
 	// request: userId
 	// response: user snapshot to load main page
 	roomPtr, err := h.roomService.GetAnyRoom()
 	if err != nil {
-		response := common.ResponseErrorFormatter(err)
-		c.JSON(http.StatusInternalServerError, response)
+		response := common.ResponseErrorFormatter(http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(response)
+		// w.Write([]byte(fmt.Sprintf("%v", response)))
+		// c.JSON(http.StatusInternalServerError, response)
 		return
 	}
 
 	response := common.ResponseFormatter(http.StatusOK, "success", "get rooms successfull", *roomPtr)
 	log.Println("RESPONSE TO BROWSER: ", response)
-	// Add CORS headers
-	// c.Header("Access-Control-Allow-Origin", "http://localhost:3000")
-	// c.Header("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS")
 
-	c.JSON(http.StatusOK, response)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+	// w.Write([]byte(fmt.Sprintf("%v", response)))
+	// c.JSON(http.StatusOK, response)
 }
 
 // AddRoom will add room to the database
-func (h *roomHandler) AddRoom(c *gin.Context) {
+func (h *roomHandler) AddRoom(w http.ResponseWriter, r *http.Request) {
 
 	var room mongodb.Room
 	// c.Bind(&roomName)
-
-	err := c.BindJSON(&room)
+	err := json.NewDecoder(r.Body).Decode(&room)
+	// err := c.BindJSON(&room)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, room)
+		response := common.ResponseErrorFormatter(http.StatusBadRequest, errors.New("request Decoding failed"))
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(response)
+		// w.Write([]byte(fmt.Sprintf("%v", room)))
+		// c.JSON(http.StatusBadRequest, room)
 		return
 	}
 	log.Println("JSON roomName: ", room.Name)
 	// roomId, err := mongo.AddRoom(room.Name)
 	roomId, err := h.roomService.AddRoom(room.Name)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, roomId)
+		response := common.ResponseErrorFormatter(http.StatusInternalServerError, errors.New("add room failed"))
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(response)
+		// w.Write([]byte(fmt.Sprintf("%v", roomId)))
+		// c.JSON(http.StatusInternalServerError, roomId)
 		return
 	}
 	fmt.Println("room_io_handler-AddRoom: ", roomId)
 	response := common.ResponseFormatter(http.StatusOK, "success", "add room successfull", roomId)
-	c.JSON(http.StatusOK, response)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+	// w.Write([]byte(fmt.Sprintf("%v", response)))
+	// c.JSON(http.StatusOK, response)
 }

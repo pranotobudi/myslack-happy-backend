@@ -2,12 +2,13 @@ package users
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gin-gonic/gin"
+	"github.com/pranotobudi/myslack-happy-backend/common"
 	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 	"github.com/stretchr/testify/assert"
 )
@@ -62,14 +63,20 @@ func TestGetUser(t *testing.T) {
 			// messageHandler := NewMessageHandler(&mockService{})
 			userHandler := NewUserHandler()
 			userHandler.userService = &mockService{}
-			rc := httptest.NewRecorder()
-			c, _ := gin.CreateTestContext(rc)
-			c.Request, _ = http.NewRequest(tc.HttpMethod, "http://localhost:8080?email=bud@gmail.com", nil)
+			rr := httptest.NewRecorder()
+			// c, _ := gin.CreateTestContext(rc)
+			req, _ := http.NewRequest(tc.HttpMethod, "http://localhost:8080?email=bud@gmail.com", nil)
 
-			userHandler.GetUserByEmail(c)
+			userHandler.GetUserByEmail(rr, req)
 
-			assert.EqualValues(t, tc.CodeWant, rc.Code)
-			// log.Println("test response: ", rc.Body.String())
+			// check header StatusCode
+			assert.EqualValues(t, tc.CodeWant, rr.Code)
+			// check response (JSON format) StatusCode
+			var response common.Response
+			if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
+				assert.Errorf(t, err, "response format is not valid")
+			}
+			assert.EqualValues(t, tc.CodeWant, response.Meta.Code)
 		})
 	}
 }
@@ -118,13 +125,20 @@ func TestUserAuth(t *testing.T) {
 			// messageHandler := NewMessageHandler(&mockService{})
 			userHandler := NewUserHandler()
 			userHandler.userService = &mockService{}
-			rc := httptest.NewRecorder()
-			c, _ := gin.CreateTestContext(rc)
-			c.Request, _ = http.NewRequest(tc.HttpMethod, "", bytes.NewBuffer(tc.Body))
+			rr := httptest.NewRecorder()
+			// c, _ := gin.CreateTestContext(rc)
+			req, _ := http.NewRequest(tc.HttpMethod, "", bytes.NewBuffer(tc.Body))
 
-			userHandler.UserAuth(c)
+			userHandler.UserAuth(rr, req)
 
-			assert.EqualValues(t, tc.CodeWant, rc.Code)
+			// check header StatusCode
+			assert.EqualValues(t, tc.CodeWant, rr.Code)
+			// check response (JSON format) StatusCode
+			var response common.Response
+			if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
+				assert.Errorf(t, err, "response format is not valid")
+			}
+			assert.EqualValues(t, tc.CodeWant, response.Meta.Code)
 			// log.Println("test response: ", rc.Body.String())
 		})
 	}
@@ -187,13 +201,20 @@ func TestUpdateUserRooms(t *testing.T) {
 			// messageHandler := NewMessageHandler(&mockService{})
 			userHandler := NewUserHandler()
 			userHandler.userService = &mockService{}
-			rc := httptest.NewRecorder()
-			c, _ := gin.CreateTestContext(rc)
-			c.Request, _ = http.NewRequest(tc.HttpMethod, "", bytes.NewBuffer(tc.Body))
+			rr := httptest.NewRecorder()
+			// c, _ := gin.CreateTestContext(rc)
+			req, _ := http.NewRequest(tc.HttpMethod, "", bytes.NewBuffer(tc.Body))
 
-			userHandler.UpdateUserRooms(c)
+			userHandler.UpdateUserRooms(rr, req)
 
-			assert.EqualValues(t, tc.CodeWant, rc.Code)
+			// check header StatusCode
+			assert.EqualValues(t, tc.CodeWant, rr.Code)
+			// check response (JSON format) StatusCode
+			var response common.Response
+			if err := json.NewDecoder(rr.Body).Decode(&response); err != nil {
+				assert.Errorf(t, err, "response format is not valid")
+			}
+			assert.EqualValues(t, tc.CodeWant, response.Meta.Code)
 			// log.Println("test response: ", rc.Body.String())
 		})
 	}

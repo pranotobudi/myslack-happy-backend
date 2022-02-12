@@ -6,6 +6,8 @@ require (
 	github.com/benweissmann/memongo v0.1.1 // indirect
 	github.com/gin-contrib/cors v1.3.1 // indirect
 	github.com/gin-gonic/gin v1.7.7
+	github.com/go-chi/chi/v5 v5.0.7 // indirect
+	github.com/go-chi/cors v1.2.0 // indirect
 	github.com/go-playground/validator/v10 v10.9.0 // indirect
 	github.com/gofiber/fiber/v2 v2.23.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect

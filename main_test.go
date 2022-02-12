@@ -5,8 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gin-gonic/gin"
-	main "github.com/pranotobudi/myslack-monolith-backend"
+	main "github.com/pranotobudi/myslack-happy-backend"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -37,42 +36,6 @@ func TestRouting(t *testing.T) {
 			router.ServeHTTP(w, req)
 
 			assert.Equal(t, http.StatusOK, w.Code)
-			// t.Log("body: " + string(w.Body.String()))
-
-			// srv := httptest.NewServer(Router())
-			// defer srv.Close()
-
-			// res, err := http.Get(fmt.Sprintf("%s/roomss", srv.URL))
-			// if err != nil {
-			// 	t.Fatalf("could not send GET request: %v", err)
-			// }
-
-			// if res.StatusCode != http.StatusOK {
-			// 	t.Errorf("expected status OK, but got %v", res.StatusCode)
-			// }
-			// b, err := ioutil.ReadAll(res.Body)
-			// if err != nil {
-			// 	t.Fatalf("expected an integer; got %s", err)
-			// }
 		})
 	}
-}
-
-func TestCORS(t *testing.T) {
-	w := httptest.NewRecorder()
-	c, _ := gin.CreateTestContext(w)
-	// test request, must instantiate a request first
-	// req := &http.Request{
-	// 	URL:    &url.URL{},
-	// 	Header: make(http.Header), // if you need to test headers
-	// }
-	req, err := http.NewRequest("GET", "/rooms", nil)
-	if err != nil {
-		t.Fatalf(err.Error())
-	}
-	// example: req.Header.Add("Accept", "application/json")
-	c.Request = req
-	main.CORS(c)
-
-	// logrus.Info("header:", c.Writer.Header())
 }
