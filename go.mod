@@ -1,5 +1,6 @@
 module github.com/pranotobudi/myslack-happy-backend
 
+// +heroku goVersion 1.16
 go 1.16
 
 require (
