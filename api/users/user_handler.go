@@ -4,9 +4,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 
+	"github.com/pranotobudi/myslack-happy-backend/api/rooms"
 	"github.com/pranotobudi/myslack-happy-backend/common"
 	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 )
@@ -137,12 +139,42 @@ func (h *userHandler) UpdateUserRooms(w http.ResponseWriter, r *http.Request) {
 
 }
 
+type HelloData struct {
+	Rooms []mongodb.Room
+}
+
 // HelloWorld will return welcome message for home path
 func HelloWorld(w http.ResponseWriter, r *http.Request) {
-	response := common.ResponseFormatter(http.StatusOK, "success", "get user successfull", "Hello from MySlack Happy App. A Persistence Chat App... The server is running at the background..")
-	log.Println("RESPONSE TO BROWSER: ", response)
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+	t := template.Must(template.ParseFiles("./template/hello.gohtml"))
+	roomService := rooms.NewRoomService()
+	rooms, err := roomService.GetRooms()
+	if err != nil {
+		response := common.ResponseErrorFormatter(http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(response)
+		// w.Write([]byte(fmt.Sprintf("%v", response)))
+		// c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+	// helloData := HelloData{
+	// 	Rooms: rooms,
+	// }
+	// err = t.Execute(w, helloData)
+	err = t.Execute(w, rooms)
+	if err != nil {
+		// panic(err)
+		response := common.ResponseErrorFormatter(http.StatusInternalServerError, err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(response)
+		// w.Write([]byte(fmt.Sprintf("%v", response)))
+		// c.JSON(http.StatusInternalServerError, response)
+		return
+	}
+
+	// response := common.ResponseFormatter(http.StatusOK, "success", "load page template successfull", "Hello from MySlack Happy App. A Persistence Chat App... The server is running at the background..")
+	// log.Println("RESPONSE TO BROWSER: ", response)
+	// w.WriteHeader(http.StatusOK)
+	// json.NewEncoder(w).Encode(response)
 	// w.Write([]byte(fmt.Sprintf("%v", response)))
 	// c.JSON(http.StatusOK, response)
 }

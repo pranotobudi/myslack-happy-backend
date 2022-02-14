@@ -17,6 +17,7 @@ var (
 	getUserFunc         func(email string) (*mongodb.User, error)
 	userAuthFunc        func(userAuth mongodb.UserAuth) (*mongodb.User, error)
 	updateUserRoomsFunc func(userMongo mongodb.User) (*mongodb.User, error)
+	userMailChatFunc    func(userMongo mongodb.User) (string, error)
 )
 
 type mockService struct{}
@@ -29,6 +30,10 @@ func (m *mockService) UserAuth(userAuth mongodb.UserAuth) (*mongodb.User, error)
 }
 func (m *mockService) UpdateUserRooms(userMongo mongodb.User) (*mongodb.User, error) {
 	return updateUserRoomsFunc(userMongo)
+}
+
+func (m *mockService) UserMailChat(userMongo mongodb.User) (string, error) {
+	return userMailChatFunc(userMongo)
 }
 
 func TestGetUser(t *testing.T) {

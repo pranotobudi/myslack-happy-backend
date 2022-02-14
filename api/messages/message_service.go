@@ -2,10 +2,11 @@ package messages
 
 import (
 	"github.com/pranotobudi/myslack-happy-backend/mongodb"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type IMessageService interface {
-	GetMessages(filter interface{}) ([]mongodb.Message, error)
+	GetMessages(roomId string) ([]mongodb.Message, error)
 }
 type messageService struct {
 	repo mongodb.IMongoDB
@@ -18,7 +19,8 @@ func NewMessageService() *messageService {
 }
 
 // GetMessages will get messages based on the filter argument
-func (s *messageService) GetMessages(filter interface{}) ([]mongodb.Message, error) {
+func (s *messageService) GetMessages(roomId string) ([]mongodb.Message, error) {
+	filter := bson.M{"room_id": roomId}
 	messages, err := s.repo.GetMessages(filter)
 	if err != nil {
 		return nil, err

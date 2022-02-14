@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=320, initial-scale=1" />
+  <title>Chat Messages</title>
+  <style type="text/css">
+
+
+     /* ----- Reset ----- */
+
+    html,
+    body,
+    .body-wrap,
+    .body-wrap-cell {
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      color: #464646;
+      text-align: left;
+    }
+
+    img {
+      border: 0;
+      line-height: 100%;
+      outline: none;
+      text-decoration: none;
+    }
+
+    table {
+      border-collapse: collapse !important;
+    }
+
+    td, th {
+      text-align: left;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 14px;
+      color: #464646;
+      line-height:1.5em;
+    }
+    /* ----- General ----- */
+
+    td.center {
+      text-align: center;
+    }
+
+    .left {
+      text-align: left;
+    }
+
+    .body-padding {
+      padding: 24px 40px 40px;
+    }
+
+  </style>
+
+
+</head>
+<body style="padding:0; margin:0; display:block; background:#ffffff; -webkit-text-size-adjust:none">
+  <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+      <td valign="top" align="left" width="100%" style="background:repeat-x url(https://www.filepicker.io/api/file/al80sTOMSEi5bKdmCgp2) #f9f8f8;">
+        <center>
+
+          <table class="w320" cellspacing="0" cellpadding="0" width="500">
+            <center>
+              <tr>
+              <td class="body-padding mobile-padding">
+
+                  <table cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                      <td style="text-align:center; font-size:30px; padding-bottom:20px;">
+                        List of Rooms Available in this app... Go to frontend url to access the app!
+                      </td>
+                    </tr>                  
+                  </table>
+
+                  {{range .}}
+                    <table>
+                          <div style="border:1px solid #B3B3B3; background-color: tomato;">RoomID: {{.Name}}</div>
+                    </table>
+                  {{end}}  
+
+                </td>
+              </tr>
+            </center>
+          </table>  
+            
+        </center>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

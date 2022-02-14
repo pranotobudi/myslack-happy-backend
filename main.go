@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+	"github.com/pranotobudi/myslack-happy-backend/api/emails"
 	"github.com/pranotobudi/myslack-happy-backend/api/messages"
 	"github.com/pranotobudi/myslack-happy-backend/api/rooms"
 	"github.com/pranotobudi/myslack-happy-backend/api/users"
@@ -45,6 +46,7 @@ func Router() *chi.Mux {
 	messageHandler := messages.NewMessageHandler()
 	roomHandler := rooms.NewRoomHandler()
 	userHandler := users.NewUserHandler()
+	emailHandler := emails.NewEmailHandler()
 	// #2 init chi routing server
 	router := chi.NewRouter()
 	// router := gin.Default()
@@ -67,6 +69,7 @@ func Router() *chi.Mux {
 	router.Get("/messages", messageHandler.GetMessages)
 	router.Get("/userByEmail", userHandler.GetUserByEmail)
 	router.Post("/userAuth", userHandler.UserAuth)
+	router.Post("/mailChat", emailHandler.MailChat)
 	router.Put("/updateUserRooms", userHandler.UpdateUserRooms)
 	router.Get("/websocket", msgserver.InitWebsocket)
 

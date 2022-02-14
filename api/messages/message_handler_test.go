@@ -14,31 +14,31 @@ import (
 )
 
 var (
-	getMessagesServiceFunc func(filter interface{}) ([]mongodb.Message, error)
+	getMessagesServiceFunc func(roomId string) ([]mongodb.Message, error)
 )
 
 type mockMessageService struct{}
 
-func (m *mockMessageService) GetMessages(filter interface{}) ([]mongodb.Message, error) {
-	return getMessagesServiceFunc(filter)
+func (m *mockMessageService) GetMessages(roomId string) ([]mongodb.Message, error) {
+	return getMessagesServiceFunc(roomId)
 }
 func TestGetMessagesHandler(t *testing.T) {
 
 	tt := []struct {
 		Name     string
-		mockFunc func(filter interface{}) ([]mongodb.Message, error)
+		mockFunc func(roomId string) ([]mongodb.Message, error)
 		CodeWant int
 	}{
 		{
 			Name: "GetMessages Success",
-			mockFunc: func(filter interface{}) ([]mongodb.Message, error) {
+			mockFunc: func(roomId string) ([]mongodb.Message, error) {
 				return []mongodb.Message{}, nil
 			},
 			CodeWant: http.StatusOK,
 		},
 		{
 			Name: "GetMessages Failed",
-			mockFunc: func(filter interface{}) ([]mongodb.Message, error) {
+			mockFunc: func(roomId string) ([]mongodb.Message, error) {
 				return nil, errors.New("fail to get messages")
 			},
 			CodeWant: http.StatusInternalServerError,

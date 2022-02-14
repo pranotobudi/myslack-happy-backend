@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/pranotobudi/myslack-happy-backend/common"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 type IMessageHandler interface {
@@ -38,8 +37,7 @@ func (h *messageHandler) GetMessages(w http.ResponseWriter, r *http.Request) {
 		// w.Write([]byte(fmt.Sprintf("%v", roomId)))
 		return
 	}
-	filter := bson.M{"room_id": roomId}
-	messages, err := h.service.GetMessages(filter)
+	messages, err := h.service.GetMessages(roomId)
 	if err != nil {
 		response := common.ResponseErrorFormatter(http.StatusInternalServerError, err)
 		w.WriteHeader(http.StatusInternalServerError)

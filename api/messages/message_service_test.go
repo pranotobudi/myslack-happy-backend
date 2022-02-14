@@ -6,7 +6,6 @@ import (
 
 	"github.com/pranotobudi/myslack-happy-backend/mongodb"
 	"github.com/stretchr/testify/assert"
-	"go.mongodb.org/mongo-driver/bson"
 )
 
 var (
@@ -25,7 +24,7 @@ func TestGetMessagesService(t *testing.T) {
 	tt := []struct {
 		Name      string
 		mockFunc  func(filter interface{}) ([]mongodb.Message, error)
-		filter    interface{}
+		roomId    string
 		IsSuccess bool
 	}{
 		{
@@ -33,7 +32,7 @@ func TestGetMessagesService(t *testing.T) {
 			mockFunc: func(filter interface{}) ([]mongodb.Message, error) {
 				return []mongodb.Message{}, nil
 			},
-			filter:    bson.M{"room_id": "abc1234567"},
+			roomId:    "abc1234567",
 			IsSuccess: true,
 		},
 		{
@@ -41,7 +40,7 @@ func TestGetMessagesService(t *testing.T) {
 			mockFunc: func(filter interface{}) ([]mongodb.Message, error) {
 				return nil, errors.New("get messages failed")
 			},
-			filter:    bson.M{"room_id": ""},
+			roomId:    "",
 			IsSuccess: false,
 		},
 	}
@@ -51,7 +50,7 @@ func TestGetMessagesService(t *testing.T) {
 			messageService := NewMessageService()
 			messageService.repo = &mockMessageRepo{}
 
-			messages, err := messageService.GetMessages(tc.filter)
+			messages, err := messageService.GetMessages(tc.roomId)
 
 			if tc.IsSuccess {
 				assert.NotNil(t, messages)
