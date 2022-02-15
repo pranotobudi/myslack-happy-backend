@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 	"sync"
 	"time"
 
@@ -14,47 +15,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
-
-type User struct {
-	ID        string   `json:"id"`
-	Email     string   `json:"email"`
-	Username  string   `json:"username"`
-	UserImage string   `json:"user_image"`
-	Rooms     []string `json:"rooms"`
-}
-
-type UserAuth struct {
-	Email     string `json:"email"`
-	UserImage string `json:"user_image"`
-}
-
-type Message struct {
-	ID        string    `json:"id"`
-	Message   string    `json:"message"`
-	RoomID    string    `json:"room_id"`
-	UserID    string    `json:"user_id"`
-	Username  string    `json:"username"`
-	UserImage string    `json:"user_image"`
-	Timestamp time.Time `json:"timestamp"`
-}
-type ClientMessage struct {
-	Message   string    `json:"message"`
-	UserID    string    `json:"user_id"`
-	Username  string    `json:"username"`
-	UserImage string    `json:"user_image"`
-	RoomID    string    `json:"room_id"`
-	Timestamp time.Time `json:"timestamp"`
-}
-type RoomMongo struct {
-	_ID  primitive.ObjectID
-	Name string
-}
-
-// Room is neutral without ObjectID
-type Room struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
-}
 
 type IMongoDB interface {
 	createCollection(name string)
@@ -76,6 +36,80 @@ type IMongoDB interface {
 	UpdateUser(filter interface{}, update interface{}, options *options.UpdateOptions) error
 	AddUsers(users []interface{}) ([]string, error)
 }
+
+type User struct {
+	ID        string   `json:"id"`
+	Email     string   `json:"email"`
+	Username  string   `json:"username"`
+	UserImage string   `json:"user_image"`
+	Rooms     []string `json:"rooms"`
+}
+
+func (u User) String() string {
+	var roomsString []string
+	for _, room := range u.Rooms {
+		roomsString = append(roomsString, room)
+	}
+	rooms := strings.Join(roomsString, "\n")
+
+	return fmt.Sprintf("username:%v\n rooms: %v\n", u.Username, rooms)
+}
+
+type UserAuth struct {
+	Email     string `json:"email"`
+	UserImage string `json:"user_image"`
+}
+
+func (u UserAuth) String() string {
+	return fmt.Sprintf("email:%v\n", u.Email)
+}
+
+type Message struct {
+	ID        string    `json:"id"`
+	Message   string    `json:"message"`
+	RoomID    string    `json:"room_id"`
+	UserID    string    `json:"user_id"`
+	Username  string    `json:"username"`
+	UserImage string    `json:"user_image"`
+	Timestamp time.Time `json:"timestamp"`
+}
+
+func (m Message) String() string {
+	return fmt.Sprintf("username:%v\n message: %v\n", m.Message, m.Username)
+}
+
+type ClientMessage struct {
+	Message   string    `json:"message"`
+	UserID    string    `json:"user_id"`
+	Username  string    `json:"username"`
+	UserImage string    `json:"user_image"`
+	RoomID    string    `json:"room_id"`
+	Timestamp time.Time `json:"timestamp"`
+}
+
+func (c ClientMessage) String() string {
+	return fmt.Sprintf("username:%v\n message: %v\n", c.Username, c.Message)
+}
+
+type RoomMongo struct {
+	_ID  primitive.ObjectID
+	Name string
+}
+
+func (r RoomMongo) String() string {
+	return fmt.Sprintf("name:%v\n", r.Name)
+}
+
+// Room is neutral without ObjectID
+type Room struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+func (r Room) String() string {
+	return fmt.Sprintf("name:%v\n", r.Name)
+}
+
 type MongoDB struct {
 	client *mongo.Client
 	config config.MongoDb

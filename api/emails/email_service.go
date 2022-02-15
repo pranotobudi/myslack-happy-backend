@@ -2,6 +2,7 @@ package emails
 
 import (
 	"bytes"
+	"fmt"
 	"html/template"
 	"log"
 
@@ -22,9 +23,18 @@ type EmailChat struct {
 	Email string
 	Rooms []EmailRoom
 }
+
+func (e EmailChat) String() string {
+	return fmt.Sprintf("Email: %v\n Rooms:\n%v\n", e.Email, e.Rooms)
+}
+
 type EmailRoom struct {
 	RoomId   string
 	Messages []mongodb.Message
+}
+
+func (e EmailRoom) String() string {
+	return fmt.Sprintf("RoomId: %v\n Messages:\n%v\n", e.RoomId, e.Messages)
 }
 
 // NewEmailService will return emailService object

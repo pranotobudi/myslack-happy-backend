@@ -1,10 +1,17 @@
 package config
 
-import "os"
+import (
+	"fmt"
+	"os"
+)
 
 type MongoDb struct {
 	Password string
 	Name     string
+}
+
+func (m MongoDb) String() string {
+	return fmt.Sprintf("name:%v\n", m.Name)
 }
 
 func MongoDbConfig() MongoDb {
