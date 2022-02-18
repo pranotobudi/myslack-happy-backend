@@ -22,6 +22,7 @@ func NewEmailHandler() *emailHandler {
 	return &emailHandler{emailService: emailService}
 }
 
+// UserMailChat will send email of chat with each room and its messages to the current user
 func (h *emailHandler) MailChat(w http.ResponseWriter, r *http.Request) {
 	// login
 	var userMongo mongodb.User

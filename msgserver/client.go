@@ -73,6 +73,7 @@ func NewWsClient(conn *websocket.Conn, hub *Hub, mongodbConn *mongodb.MongoDB) *
 	}
 }
 
+// InitWebsocket will initialize websocket chat system
 func InitWebsocket(w http.ResponseWriter, r *http.Request) {
 
 	// init websocket

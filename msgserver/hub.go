@@ -40,6 +40,7 @@ func NewHub() *Hub {
 	}
 }
 
+// addClient will add client c to the room roomName
 func (h *Hub) addClient(roomName string, c *wsClient) {
 	h.participants[roomName][c.clientId] = c
 	// h.participants[roomName] = append(h.participants[roomName], c)

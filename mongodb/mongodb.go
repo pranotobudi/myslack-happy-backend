@@ -118,6 +118,7 @@ type MongoDB struct {
 var MongoDBInstance *MongoDB
 var once sync.Once
 
+// NewMongoDB will initialize MongoDB struct
 func NewMongoDB() *MongoDB {
 	once.Do(func() {
 		dbConfig := config.MongoDbConfig()
@@ -143,10 +144,14 @@ func NewMongoDB() *MongoDB {
 
 	return MongoDBInstance
 }
+
+// createCollection will create new collection inside mongoDB
 func (m *MongoDB) createCollection(name string) {
 	coll := m.client.Database("myslack-db").Collection(name)
 	log.Println("create collection, name:", coll.Name())
 }
+
+// getCollection will get a collection from mongoDB
 func (m *MongoDB) getCollection(name string) *mongo.Collection {
 	return m.client.Database(m.config.Name).Collection(name)
 }
@@ -160,6 +165,7 @@ func (m *MongoDB) getCollection(name string) *mongo.Collection {
 // 	log.Println("Inserted document with _id: \n", result.InsertedID)
 // }
 
+// InsertDoc will insert new doc (row) to mongoDB
 func (m *MongoDB) InsertDoc(name string, doc bson.D) {
 	// doc := bson.D{{"title", "Invisible Cities"}, {"author", "Italo Calvino"}, {"year_published", 1974}}
 	coll := m.getCollection(name)
@@ -170,6 +176,7 @@ func (m *MongoDB) InsertDoc(name string, doc bson.D) {
 	log.Println("Inserted document with _id: \n", result.InsertedID)
 }
 
+// DataSeeder is migrator for mongoDB database
 func (m *MongoDB) DataSeeder() {
 	// create collection
 	m.createCollection("rooms")
@@ -236,6 +243,7 @@ func (m *MongoDB) DataSeeder() {
 
 }
 
+// GetRooms will get all rooms inside mongoDB database
 func (m *MongoDB) GetRooms() ([]Room, error) {
 	coll := m.getCollection("rooms")
 	log.Println("getRooms coll: ", coll)
@@ -262,6 +270,7 @@ func (m *MongoDB) GetRooms() ([]Room, error) {
 	return finalResult, nil
 }
 
+// GetRoom will get room from mongoDB based on filter
 func (m *MongoDB) GetRoom(filter interface{}) (*Room, error) {
 	coll := m.getCollection("rooms")
 	// filter := bson.D{}
@@ -281,6 +290,7 @@ func (m *MongoDB) GetRoom(filter interface{}) (*Room, error) {
 	return &room, nil
 }
 
+// GetAnyRoom will get the first room found from mongoDB database
 func (m *MongoDB) GetAnyRoom() (*Room, error) {
 	coll := m.getCollection("rooms")
 	log.Println("GetAnyRoom coll: ", coll)
@@ -301,6 +311,7 @@ func (m *MongoDB) GetAnyRoom() (*Room, error) {
 	return &room, nil
 }
 
+// AddRoom will add one room to mongoDB database
 func (m *MongoDB) AddRoom(roomName string) (string, error) {
 
 	coll := m.getCollection("rooms")
@@ -315,6 +326,7 @@ func (m *MongoDB) AddRoom(roomName string) (string, error) {
 	return fmt.Sprintf("%v", result.InsertedID), nil
 }
 
+// AddRooms will get multiple rooms to mongoDB database
 func (m *MongoDB) AddRooms(rooms []interface{}) ([]string, error) {
 
 	coll := m.getCollection("rooms")
@@ -334,6 +346,7 @@ func (m *MongoDB) AddRooms(rooms []interface{}) ([]string, error) {
 	return retValues, nil
 }
 
+// GetMessages will get list of messages from mongoDB based on filter
 func (m *MongoDB) GetMessages(filter interface{}) ([]Message, error) {
 	log.Println("INSIDE REPO GetMessages")
 	coll := m.getCollection("messages")
@@ -371,6 +384,7 @@ func (m *MongoDB) GetMessages(filter interface{}) ([]Message, error) {
 	return finalResult, nil
 }
 
+// GetMessage will get a message from mongoDB based on filter
 func (m *MongoDB) GetMessage(filter interface{}) (Message, error) {
 	coll := m.getCollection("messages")
 	// filter := bson.D{}
@@ -392,6 +406,7 @@ func (m *MongoDB) GetMessage(filter interface{}) (Message, error) {
 	return message, nil
 }
 
+// AddMessage will add a message from mongoDB
 func (m *MongoDB) AddMessage(message interface{}) (string, error) {
 
 	coll := m.getCollection("messages")
@@ -406,6 +421,7 @@ func (m *MongoDB) AddMessage(message interface{}) (string, error) {
 	// return fmt.Sprintf("%v", result.InsertedID), nil
 }
 
+// AddMessages will add list of messages to mongoDB and return list of inserted messageID
 func (m *MongoDB) AddMessages(messages []interface{}) ([]string, error) {
 
 	coll := m.getCollection("messages")
@@ -425,6 +441,7 @@ func (m *MongoDB) AddMessages(messages []interface{}) ([]string, error) {
 	return retValues, nil
 }
 
+// GetUsers get all users in the mongoDB
 func (m *MongoDB) GetUsers(filter interface{}) ([]User, error) {
 	coll := m.getCollection("users")
 	// oid, err := primitive.ObjectIDFromHex(roomId)
@@ -463,6 +480,7 @@ func (m *MongoDB) GetUsers(filter interface{}) ([]User, error) {
 	return finalResult, nil
 }
 
+// GetUser will get user based on the filter
 func (m *MongoDB) GetUser(filter interface{}) (*User, error) {
 	coll := m.getCollection("users")
 	// filter := bson.D{}
@@ -495,6 +513,7 @@ func (m *MongoDB) GetUser(filter interface{}) (*User, error) {
 	return &user, nil
 }
 
+// AddUser will add user to the mongoDB
 func (m *MongoDB) AddUser(user interface{}) (string, error) {
 
 	coll := m.getCollection("users")
@@ -509,6 +528,8 @@ func (m *MongoDB) AddUser(user interface{}) (string, error) {
 	return fmt.Sprintf("%v", result.InsertedID), nil
 	// return result.InsertedID.(string), nil
 }
+
+// Updateuser will select the user based on filter and update it based on update
 func (m *MongoDB) UpdateUser(filter interface{}, update interface{}, options *options.UpdateOptions) error {
 
 	coll := m.getCollection("users")
@@ -530,6 +551,7 @@ func (m *MongoDB) UpdateUser(filter interface{}, update interface{}, options *op
 	return nil
 }
 
+// AddUsers will add multiple users to the mongoDB
 func (m *MongoDB) AddUsers(users []interface{}) ([]string, error) {
 
 	coll := m.getCollection("users")

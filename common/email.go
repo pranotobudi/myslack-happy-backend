@@ -12,6 +12,7 @@ const (
 	smtpPort          = "587"
 )
 
+// SendEmail will send email to toAddress with body as its content.
 func SendEmail(toAddress []string, body string) {
 	// Message.
 	//   message := []byte("This is a test email message.")
