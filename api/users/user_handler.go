@@ -145,7 +145,7 @@ type HelloData struct {
 
 // HelloWorld will return welcome message for home path
 func HelloWorld(w http.ResponseWriter, r *http.Request) {
-	t := template.Must(template.ParseFiles("./template/hello.gohtml"))
+	t := template.Must(template.ParseFiles("./template/hello.html"))
 	roomService := rooms.NewRoomService()
 	rooms, err := roomService.GetRooms()
 	if err != nil {
