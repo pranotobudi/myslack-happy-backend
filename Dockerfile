@@ -1,4 +1,3 @@
-# --- Section 2
 # --- Section 1 Start
 FROM golang:1.16-alpine as build-dev
 
