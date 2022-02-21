@@ -177,4 +177,5 @@ func HelloWorld(w http.ResponseWriter, r *http.Request) {
 	// json.NewEncoder(w).Encode(response)
 	// w.Write([]byte(fmt.Sprintf("%v", response)))
 	// c.JSON(http.StatusOK, response)
+	//
 }
