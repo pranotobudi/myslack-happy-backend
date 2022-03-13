@@ -24,7 +24,7 @@ func (m *mockEmailService) MailChat(userMongo mongodb.User) (string, error) {
 	return mailChatServiceFunc(userMongo)
 }
 
-func TestMailChat(t *testing.T) {
+func TestGetMessagesHandler(t *testing.T) {
 
 	tt := []struct {
 		Name     string
